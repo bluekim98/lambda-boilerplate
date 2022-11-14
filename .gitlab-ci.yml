@@ -1,0 +1,30 @@
+image: nikolaik/python-nodejs:python3.11-nodejs16-slim
+
+before_script:
+    - 'mkdir -p ~/.aws'
+    - 'mkdir -p config'
+    - ls
+    - cp "$AWS_ENV" ~/.aws/credentials
+    - cp "$BACKEND_ENV" config/.env
+    - ls -al
+    - yarn
+
+deploy to production:
+    environment:
+        name: production
+    stage: deploy
+    only:
+        - production
+    script:
+        - yarn run prune:prd
+        - yarn run deploy:prd
+
+deploy to staging:
+    environment:
+        name: develop
+    stage: deploy
+    only:
+        - develop
+    script:
+        - yarn run prune:stg
+        - yarn run deploy:stg

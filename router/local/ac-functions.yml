@@ -1,0 +1,10 @@
+Boilerplate:
+    role: arn:aws:iam::849218674745:role/serverless_edge
+    handler: src/lambda.index
+    events:
+        - http:
+              method: ANY
+              path: /
+        - http:
+              method: ANY
+              path: '{proxy+}'

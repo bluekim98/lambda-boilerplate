@@ -1,0 +1,69 @@
+service: boilerplate
+
+frameworkVersion: '3'
+
+custom:
+    dotenv:
+        path: config/.env
+    defaultRegion: ap-northeast-2
+    defaultEnvironmentGroup: local
+    region: ${opt:region, self:custom.defaultRegion}
+    stage: ${opt:stage, self:custom.defaultEnvironmentGroup}
+    # objectPrefix: '${self:service}-${self:custom.stage}'
+    serverless-offline:
+        httpPort: 4000
+    esbuild:
+        bundle: true
+        minify: false
+        packager: yarn
+        watch:
+            pattern: ['src/**/*.ts']
+        installExtraArgs:
+            - '--legacy-peer-deps'
+        external:
+            - class-transformer
+            - class-validator
+            - ramda
+            - '@vendia/serverless-express'
+            - '@apollo/federation'
+            - '@apollo/subgraph'
+            - 'graphql-tools'
+            - chrome-aws-lambda
+        exclude:
+            - '@nestjs/microservices'
+            - '@nestjs/websockets/socket-module'
+            - 'cache-manager'
+            - '@apollo/gateway'
+            - 'ts-morph'
+            - 'apollo-server-fastify'
+            - './fsevents.node'
+            - 'pg-native'
+            - node_modules/puppeteer/.local-chromium/*
+plugins:
+    - serverless-esbuild
+    - serverless-offline
+    - serverless-prune-plugin
+    - serverless-dotenv-plugin
+
+provider:
+    lambdaHashingVersion: 20201221
+    # architecture: arm64
+    name: aws
+    runtime: nodejs14.x
+    region: ${self:custom.region}
+    stage: ${self:custom.stage}
+    timeout: 15
+    apiGateway:
+        minimumCompressionSize: 1024
+        shouldStartNameWithService: true
+    environment:
+        AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+        stage: ${self:custom.stage}
+
+functions:
+    - ${file(./router/${opt:stage, self:provider.stage, 'dev'}/ac-functions.yml)}
+
+package:
+    patterns:
+        - 'config/**'
+        - 'config/.env*'

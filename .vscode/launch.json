@@ -1,0 +1,44 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "command": "yarn start:dev",
+            "name": "Run yarn start:dev",
+            "request": "launch",
+            "type": "node-terminal"
+        },                
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "serverless",
+            "program": "${workspaceFolder}/node_modules/.bin/sls",
+            "args": [
+                "offline",
+                "start",
+                "--env",
+                "development",
+            ],
+            "runtimeExecutable": "/usr/local/opt/node@14/bin/node"
+        },        
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "ts-node",
+            "program": "${workspaceFolder}/node_modules/.bin/ts-node",
+            "args": [
+                "build.ts",
+            ],
+            "runtimeExecutable": "/usr/local/opt/node@14/bin/node"
+        },
+        {
+            "name": "Attach to Process",
+            "type": "node",
+            "request": "attach",
+            "restart": true,
+            "processId": "${command:PickProcess}"
+        }
+    ]
+}
